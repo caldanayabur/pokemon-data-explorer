@@ -19,20 +19,20 @@ The following **required** functionality is completed:
     - Total Pokemon count
     - Average weight of all displayed Pokemon
     - Tallest Pokemon name
-- [ ] **A search bar allows the user to search for an item in the fetched data**
+- [x] **A search bar allows the user to search for an item in the fetched data**
   - The search bar **correctly** filters items in the list, only displaying items matching the search query
   - The list of results dynamically updates as the user types into the search bar
-- [ ] **An additional filter allows the user to restrict displayed items by specified categories**
+- [x] **An additional filter allows the user to restrict displayed items by specified categories**
   - The filter restricts items in the list using a **different attribute** than the search bar 
   - The filter **correctly** filters items in the list, only displaying items matching the filter attribute in the dashboard
   - The dashboard list dynamically updates as the user adjusts the filter
 
 The following **optional** features are implemented:
 
-- [ ] Multiple filters can be applied simultaneously
-- [ ] Filters use different input types
+- [x] Multiple filters can be applied simultaneously
+- [x] Filters use different input types
   - e.g., as a text input, a dropdown or radio selection, and/or a slider
-- [ ] The user can enter specific bounds for filter values
+- [x] The user can enter specific bounds for filter values
 
 The following **additional** features are implemented:
 
@@ -57,7 +57,7 @@ Describe any challenges encountered while building the app.
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [2026] [Carolina Aldana]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

@@ -4,6 +4,9 @@ import './App.css'
 export default function App() {
   const [pokemon, setPokemon] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [minWeight, setMinWeight] = useState(0);
+  const [maxWeight, setMaxWeight] = useState(500);
 
   useEffect(() => {
     const fetchPokemon = async () => {
@@ -50,10 +53,25 @@ export default function App() {
         )
       : null;
 
-  // Filter pokemon based on search input
-  const filteredPokemon = pokemon.filter((poke) =>
-    poke.name.toLowerCase().includes(searchInput.toLowerCase())
-  );
+  // Calculate max weight for slider
+  const maxPokemonWeight =
+    pokemon.length > 0
+      ? Math.max(...pokemon.map((poke) => poke.weight))
+      : 500;
+
+  // Filter pokemon based on search input, type, and weight bounds
+  const filteredPokemon = pokemon.filter((poke) => {
+    const matchesSearch = poke.name
+      .toLowerCase()
+      .includes(searchInput.toLowerCase());
+
+    const matchesType =
+      typeFilter === "all" || poke.type === typeFilter;
+
+    const matchesWeight = poke.weight >= minWeight && poke.weight <= maxWeight;
+
+    return matchesSearch && matchesType && matchesWeight;
+  });
 
   return (
     <>
@@ -72,6 +90,40 @@ export default function App() {
         onChange={(e) => setSearchInput(e.target.value)}
       />
 
+      <select
+        value={typeFilter}
+        onChange={(e) => setTypeFilter(e.target.value)}
+      >
+        <option value="all">All Types</option>
+        <option value="grass">Grass</option>
+        <option value="fire">Fire</option>
+        <option value="water">Water</option>
+        <option value="electric">Electric</option>
+      </select>
+
+      <div className="weight-filter">
+        <label>
+          Min Weight: {minWeight}
+          <input
+            type="range"
+            min="0"
+            max={maxPokemonWeight}
+            value={minWeight}
+            onChange={(e) => setMinWeight(Number(e.target.value))}
+          />
+        </label>
+        <label>
+          Max Weight: {maxWeight}
+          <input
+            type="range"
+            min="0"
+            max={maxPokemonWeight}
+            value={maxWeight}
+            onChange={(e) => setMaxWeight(Number(e.target.value))}
+          />
+        </label>
+      </div>
+
       <div className="pokemon-list">
         {filteredPokemon.map((poke) => (
           <div key={poke.name}>
@@ -85,4 +137,3 @@ export default function App() {
     </>
   );
 }
-
