@@ -3,6 +3,7 @@ import './App.css'
 
 export default function App() {
   const [pokemon, setPokemon] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
     const fetchPokemon = async () => {
@@ -49,6 +50,11 @@ export default function App() {
         )
       : null;
 
+  // Filter pokemon based on search input
+  const filteredPokemon = pokemon.filter((poke) =>
+    poke.name.toLowerCase().includes(searchInput.toLowerCase())
+  );
+
   return (
     <>
       <h1>Pokemon Data Explorer</h1>
@@ -59,8 +65,15 @@ export default function App() {
         <h2>Tallest Pokemon: {tallestPokemon?.name}</h2>
       </div>
 
+      <input
+        type="text"
+        placeholder="Search Pokemon..."
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
+      />
+
       <div className="pokemon-list">
-        {pokemon.map((poke) => (
+        {filteredPokemon.map((poke) => (
           <div key={poke.name}>
             <img src={poke.image} alt={poke.name} />
             <h3>{poke.name}</h3>
@@ -72,3 +85,4 @@ export default function App() {
     </>
   );
 }
+
