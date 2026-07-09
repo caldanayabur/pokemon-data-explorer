@@ -24,6 +24,26 @@ h1 {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+.error-banner {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #fff1f2;
+  color: #9f1239;
+  border: 1px solid #fda4af;
+  font-weight: 600;
+}
+
+.loading-banner {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #334155;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
 /* Statistics Section */
 .statistics {
   display: grid;

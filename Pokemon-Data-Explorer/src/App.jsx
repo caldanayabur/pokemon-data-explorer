@@ -7,57 +7,56 @@ export default function App() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [minWeight, setMinWeight] = useState(0);
   const [maxWeight, setMaxWeight] = useState(500);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchPokemon = async () => {
-      const response = await fetch(
-        "https://pokeapi.co/api/v2/pokemon?limit=20"
-      );
+      try {
+        setIsLoading(true);
+        setError("");
 
-      const data = await response.json();
+        const response = await fetch(
+          "https://pokeapi.co/api/v2/pokemon?limit=20"
+        );
 
-      const detailedPokemon = await Promise.all(
-        data.results.map(async (item) => {
-          const response = await fetch(item.url);
-          const details = await response.json();
+        if (!response.ok) {
+          throw new Error("Unable to load Pokémon right now.");
+        }
 
-          return {
-            name: details.name,
-            height: details.height,
-            weight: details.weight,
-            type: details.types[0].type.name,
-            image: details.sprites.front_default,
-          };
-        })
-      );
+        const data = await response.json();
 
-      setPokemon(detailedPokemon);
+        const detailedPokemon = await Promise.all(
+          data.results.map(async (item) => {
+            const response = await fetch(item.url);
+
+            if (!response.ok) {
+              throw new Error(`Failed to load details for ${item.name}.`);
+            }
+
+            const details = await response.json();
+
+            return {
+              name: details.name,
+              height: details.height,
+              weight: details.weight,
+              type: details.types[0].type.name,
+              image: details.sprites.front_default,
+            };
+          })
+        );
+
+        setPokemon(detailedPokemon);
+      } catch (error) {
+        setPokemon([]);
+        setError(error.message || "Something went wrong while loading Pokémon.");
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchPokemon();
   }, []);
-
-  // Calculate statistics
-  const totalPokemon = pokemon.length;
-  const averageWeight =
-    pokemon.length > 0
-      ? (
-          pokemon.reduce((sum, poke) => sum + poke.weight, 0) /
-          pokemon.length
-        ).toFixed(1)
-      : 0;
-  const tallestPokemon =
-    pokemon.length > 0
-      ? pokemon.reduce((tallest, poke) =>
-          poke.height > tallest.height ? poke : tallest
-        )
-      : null;
-
-  // Calculate max weight for slider
-  const maxPokemonWeight =
-    pokemon.length > 0
-      ? Math.max(...pokemon.map((poke) => poke.weight))
-      : 500;
 
   // Filter pokemon based on search input, type, and weight bounds
   const filteredPokemon = pokemon.filter((poke) => {
@@ -73,12 +72,37 @@ export default function App() {
     return matchesSearch && matchesType && matchesWeight;
   });
 
+  // Calculate statistics from the visible list so the summary matches the cards on screen.
+  const totalPokemon = filteredPokemon.length;
+  const averageWeight =
+    filteredPokemon.length > 0
+      ? (
+          filteredPokemon.reduce((sum, poke) => sum + poke.weight, 0) /
+          filteredPokemon.length
+        ).toFixed(1)
+      : 0;
+  const tallestPokemon =
+    filteredPokemon.length > 0
+      ? filteredPokemon.reduce((tallest, poke) =>
+          poke.height > tallest.height ? poke : tallest
+        )
+      : null;
+
+  // Calculate max weight for slider
+  const maxPokemonWeight =
+    pokemon.length > 0
+      ? Math.max(...pokemon.map((poke) => poke.weight))
+      : 500;
+
   return (
     <>
       <h1>Pokemon Data Explorer</h1>
 
+      {error && <p className="error-banner">{error}</p>}
+      {isLoading && <p className="loading-banner">Loading Pokémon data...</p>}
+
       <div className="statistics">
-        <h2>Total Pokemon: {totalPokemon}</h2>
+        <h2>Matching Pokemon: {totalPokemon}</h2>
         <h2>Average Weight: {averageWeight}</h2>
         <h2>Tallest Pokemon: {tallestPokemon?.name}</h2>
       </div>
