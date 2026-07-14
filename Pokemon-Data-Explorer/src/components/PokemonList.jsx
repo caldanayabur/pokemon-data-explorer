@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function PokemonList() {
   const [pokemon, setPokemon] = useState([]);
@@ -94,6 +103,32 @@ export default function PokemonList() {
       ? Math.max(...pokemon.map((poke) => poke.weight))
       : 500;
 
+  // Chart 1: how many of the visible Pokemon fall into each type
+  const typeCounts = filteredPokemon.reduce((counts, poke) => {
+    counts[poke.type] = (counts[poke.type] || 0) + 1;
+    return counts;
+  }, {});
+  const typeCountData = Object.entries(typeCounts).map(([type, count]) => ({
+    type,
+    count,
+  }));
+
+  // Chart 2: how average weight differs across those same types
+  const weightTotalsByType = filteredPokemon.reduce((totals, poke) => {
+    if (!totals[poke.type]) {
+      totals[poke.type] = { sum: 0, count: 0 };
+    }
+    totals[poke.type].sum += poke.weight;
+    totals[poke.type].count += 1;
+    return totals;
+  }, {});
+  const avgWeightData = Object.entries(weightTotalsByType).map(
+    ([type, { sum, count }]) => ({
+      type,
+      avgWeight: Number((sum / count).toFixed(1)),
+    })
+  );
+
   return (
     <>
       <h1>Pokemon Data Explorer</h1>
@@ -105,6 +140,71 @@ export default function PokemonList() {
         <h2>Matching Pokemon: {totalPokemon}</h2>
         <h2>Average Weight: {averageWeight}</h2>
         <h2>Tallest Pokemon: {tallestPokemon?.name}</h2>
+      </div>
+
+      <div className="charts">
+        <div className="chart-card">
+          <h3>Pokémon Count by Type</h3>
+          <ResponsiveContainer width="100%" height={260}>
+            <BarChart data={typeCountData} barCategoryGap="25%">
+              <CartesianGrid stroke="#e1e0d9" vertical={false} />
+              <XAxis
+                dataKey="type"
+                tick={{ fill: "#898781", fontSize: 12 }}
+                axisLine={{ stroke: "#c3c2b7" }}
+                tickLine={false}
+              />
+              <YAxis
+                allowDecimals={false}
+                tick={{ fill: "#898781", fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                cursor={{ fill: "rgba(42, 120, 214, 0.08)" }}
+                contentStyle={{ borderRadius: 8, border: "1px solid #e1e0d9" }}
+              />
+              <Bar
+                dataKey="count"
+                name="Pokémon"
+                fill="#2a78d6"
+                radius={[4, 4, 0, 0]}
+                maxBarSize={24}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="chart-card">
+          <h3>Average Weight by Type</h3>
+          <ResponsiveContainer width="100%" height={260}>
+            <BarChart data={avgWeightData} barCategoryGap="25%">
+              <CartesianGrid stroke="#e1e0d9" vertical={false} />
+              <XAxis
+                dataKey="type"
+                tick={{ fill: "#898781", fontSize: 12 }}
+                axisLine={{ stroke: "#c3c2b7" }}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fill: "#898781", fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                cursor={{ fill: "rgba(42, 120, 214, 0.08)" }}
+                contentStyle={{ borderRadius: 8, border: "1px solid #e1e0d9" }}
+              />
+              <Bar
+                dataKey="avgWeight"
+                name="Avg Weight"
+                fill="#2a78d6"
+                radius={[4, 4, 0, 0]}
+                maxBarSize={24}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
       <input
