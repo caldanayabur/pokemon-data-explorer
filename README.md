@@ -1,3 +1,7 @@
+
+
+https://github.com/user-attachments/assets/e76560dd-9e2b-485f-8c6a-1cb8b85190f5
+
 # Web Development Project 6 - *Pokemon Data Explorer*
 
 Submitted by: **Carolina Aldana**
@@ -40,7 +44,7 @@ https://github.com/user-attachments/assets/40097236-7c3a-4d35-baa9-8c1d6dfbe255
 
 Implemented features of part #2:
 
-
+https://github.com/user-attachments/assets/7ee19ad1-d027-465d-b707-8ad5a2249bd7
 
 Video created with Clipchamp.
 
