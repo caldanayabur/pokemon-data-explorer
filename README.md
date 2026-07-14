@@ -1,7 +1,3 @@
-
-
-https://github.com/user-attachments/assets/e76560dd-9e2b-485f-8c6a-1cb8b85190f5
-
 # Web Development Project 6 - *Pokemon Data Explorer*
 
 Submitted by: **Carolina Aldana**
